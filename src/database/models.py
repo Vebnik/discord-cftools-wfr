@@ -6,3 +6,7 @@ class AuthToken(Model):
   token = fields.CharField(max_length=255)
   created_at = fields.DatetimeField(auto_now_add=True)
 
+
+class Grant(Model):
+  data = fields.JSONField()
+  created_at = fields.DatetimeField(auto_now_add=True)

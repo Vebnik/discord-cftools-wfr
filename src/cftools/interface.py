@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Any
 
 class Config(BaseModel):
   api_url: str
@@ -32,9 +32,34 @@ class AuthData(BaseModel):
   token: str
 
 
+class Leaderborad(BaseModel):
+  cftools_id: str|Any
+  deaths: int|Any
+  environment_deaths: int|Any
+  falldamage_deaths: int|Any
+  hits: int|Any
+  kdratio: float|Any
+  kills: int|Any
+  latest_name: str|Any
+  longest_kill: float|Any
+  longest_shot: float|Any
+  playtime: int|Any
+  rank: int|Any
+  suicides: int|Any
+
+
+class StatsBoard(BaseModel):
+  leaderboard: list[Leaderborad]|Any
+  status: bool
+
+
 class ApiMethods:
 
   api_ver = 'v1'
 
   auth = f'{api_ver}/auth/register'
   grants = f'{api_ver}/@app/grants'
+
+  @classmethod
+  def board(cls, server_id, stat=None, order=-1, limit=15) -> str:
+    return f'{cls.api_ver}/server/{server_id}/leaderboard?stat={stat or "kills"}&{order=}&{limit=}'

@@ -1,7 +1,7 @@
 import requests, logging, datetime as dt
-from src.cftools.interface import Config, Grants, ApiMethods, AuthData
+from src.cftools.interface import Config, Grants, ApiMethods, AuthData, StatsBoard
 from src.database.connector import Connector
-from src.database.models import AuthToken
+from src.database.models import AuthToken, Grant
 from tortoise import Tortoise
 
 
@@ -11,6 +11,7 @@ class CfToolsApi:
   secret: str
   app_id: str
   auth_data: AuthData
+  grants: Grants
   db_connector: Connector
 
   def __init__(self, config: Config) -> None:
@@ -19,12 +20,24 @@ class CfToolsApi:
     self.app_id = config.app_id
     self.db_connector = Connector()
 
-  async def get_grants(self) -> Grants:
+  async def get_grants(self, update=False) -> Grants:
     try:
-      headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
-      response = requests.get(f'{self.api_url}{ApiMethods.grants}', headers=headers)
+      grant = await Grant.all().order_by('created_at').first()
 
-      return Grants.parse_obj(response.json())
+      if not grant or update:
+        headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
+        response = requests.get(f'{self.api_url}{ApiMethods.grants}', headers=headers)
+
+        await Grant.create(data=response.json())
+        await Tortoise.close_connections()
+        self.grants = Grants.parse_obj(response.json())
+
+        return self.grants
+
+      await Tortoise.close_connections()
+      self.grants = Grants.parse_obj(grant.data)
+
+      return self.grants
     except Exception as ex:
       logging.critical(ex)
 
@@ -44,9 +57,19 @@ class CfToolsApi:
         return self.auth_data
 
       await Tortoise.close_connections()
-
       self.auth_data = AuthData(status=True, token=is_valid)
+
       return self.auth_data
+    except Exception as ex:
+      logging.critical(ex)
+
+  async def get_leaderboard(self, server_id, url=None) -> StatsBoard:
+    try:
+      headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
+      root_url = url or f'{self.api_url}{ApiMethods.board(server_id=server_id)}'
+      response = requests.get(root_url, headers=headers)
+
+      return StatsBoard.parse_obj(response.json())
     except Exception as ex:
       logging.critical(ex)
 
