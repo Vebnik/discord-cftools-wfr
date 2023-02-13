@@ -1,7 +1,7 @@
 import requests, logging, datetime as dt
 from src.cftools.interface import Config, Grants, ApiMethods, AuthData, StatsBoard
 from src.database.connector import Connector
-from src.database.models import AuthToken, Grant
+from src.cftools.models import AuthToken, Grant
 from tortoise import Tortoise
 
 
@@ -29,12 +29,10 @@ class CfToolsApi:
         response = requests.get(f'{self.api_url}{ApiMethods.grants}', headers=headers)
 
         await Grant.create(data=response.json())
-        await Tortoise.close_connections()
         self.grants = Grants.parse_obj(response.json())
 
         return self.grants
 
-      await Tortoise.close_connections()
       self.grants = Grants.parse_obj(grant.data)
 
       return self.grants
@@ -52,11 +50,9 @@ class CfToolsApi:
         self.auth_data = AuthData.parse_obj(response.json())
 
         await AuthToken.create(token=self.auth_data.token)
-        await Tortoise.close_connections()
 
         return self.auth_data
 
-      await Tortoise.close_connections()
       self.auth_data = AuthData(status=True, token=is_valid)
 
       return self.auth_data
