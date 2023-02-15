@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Any
+from datetime import datetime
 
 class CfConfig(BaseModel):
   api_url: str
@@ -30,9 +31,10 @@ class Grants(BaseModel):
 class AuthData(BaseModel):
   status: bool
   token: str
+  created_at: datetime
 
 
-class Leaderborad(BaseModel):
+class SingleStats(BaseModel):
   cftools_id: str|Any
   deaths: int|Any
   environment_deaths: int|Any
@@ -48,8 +50,8 @@ class Leaderborad(BaseModel):
   suicides: int|Any
 
 
-class StatsBoard(BaseModel):
-  leaderboard: list[Leaderborad]|Any
+class Leaderboard(BaseModel):
+  leaderboard: list[SingleStats]|Any
   status: bool
 
 
