@@ -1,7 +1,11 @@
-import requests, logging, datetime as dt
+import requests, logging, datetime as dt, asyncio
 
 from src.cftools.interface import CfConfig, Grants, ApiMethods, AuthData, Leaderboard
 from src.cftools.models import AuthToken, Grant
+
+from disnake import ApplicationCommandInteraction
+
+from settings import BOARD_STATS
 
 
 class CfToolsApi:
@@ -10,6 +14,7 @@ class CfToolsApi:
   secret: str
   app_id: str
   auth_data: AuthData|None = None
+  cache = None
 
   def __init__(self, config: CfConfig) -> None:
     self.api_url = config.api_url
@@ -33,15 +38,23 @@ class CfToolsApi:
     except Exception as ex:
       logging.critical(ex)
 
-  async def get_leaderboard(self, server_id, url=None) -> Leaderboard:
+  async def get_leaderboard(self, server_id, interaction: ApplicationCommandInteraction, url=None) -> list[Leaderboard]:
     try:
       if not await self._valid_time_token(): await self._init_auth()
 
       headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
-      root_url = url or f'{self.api_url}{ApiMethods.board(server_id=server_id)}'
-      response = requests.get(root_url, headers=headers)
+      stats_list: list[Leaderboard] = []
 
-      return Leaderboard.parse_obj(response.json())
+      for stats in BOARD_STATS:
+        await interaction.edit_original_message(f'Work in progress -> Get `{stats}`')
+        logging.info(f'Get {stats}')
+
+        root_url = url or f'{self.api_url}{ApiMethods.board(server_id=server_id, stat=stats, limit=5)}'
+        response = requests.get(root_url, headers=headers)
+        stats_list.append(Leaderboard.parse_obj(response.json()))
+        await asyncio.sleep(1)
+
+      return stats_list
     except Exception as ex:
       logging.critical(ex)
 
