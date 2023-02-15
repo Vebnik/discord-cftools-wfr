@@ -5,7 +5,6 @@ from src.cftools.models import AuthToken, Grant
 
 from disnake import ApplicationCommandInteraction
 
-
 from settings import BOARD_STATS
 
 
