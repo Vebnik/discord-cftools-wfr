@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Any
 
-class Config(BaseModel):
+class CfConfig(BaseModel):
   api_url: str
   secret: str
   app_id: str

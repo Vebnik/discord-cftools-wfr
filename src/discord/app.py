@@ -1,32 +1,34 @@
-import discord, logging
-from discord import Client, Intents, app_commands, Interaction
+import disnake, logging, datetime, os
+from disnake.ext import commands
 
 from src.cftools.cftools_api import CfToolsApi
-from src.discord.controllers import InteractionCommandHandler, ButtonInteractionHandler
+from src.discord.interface import DisConfig
 
 
-class AppConfig:
-  intents_def = Intents.default()
-  intents_all = Intents.all()
+class App:
 
+  config: DisConfig
+  bot: commands.InteractionBot
 
-class App(Client):
+  def __init__(self, config: DisConfig) -> None:
+    try:
+      self.config = config
+      
+      if os.getenv('MODE') == 'dev':
+        self.bot = commands.InteractionBot(reload=True)
+      elif os.getenv('MODE') == 'prod':
+        self.bot = commands.InteractionBot(reload=False)
 
-  cf_api: CfToolsApi
+      # main event
+      @self.bot.event
+      async def on_ready():
+        logging.info(f'App started at: {datetime.datetime.now()}')
 
-  def __init__(self, *, intents: Intents, cf_api, **options) -> None:
-    super().__init__(intents=intents, **options)
-    self.cf_api = cf_api
-    self.tree = app_commands.CommandTree(self)
+      # extension
+      self.bot.load_extensions(os.path.join(os.getcwd(), 'src', 'discord', 'cogs', 'slash_command'))
 
-  async def on_ready(self) -> None:
-    await self.cf_api.db_connector.init_db()
-    await self.add_event_handlers()
+      # start main loop
+      self.bot.run(config.token)
 
-    logging.critical(f'Init db | Start app - {self.user}')
-
-  async def on_interaction(self, interaction: Interaction) -> None:
-    ButtonInteractionHandler(client=self, interaction=interaction)
-
-  async def add_event_handlers(self) -> None:
-    InteractionCommandHandler(client=self)
+    except Exception as ex:
+      logging.critical(ex)

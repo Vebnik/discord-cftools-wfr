@@ -11,7 +11,7 @@ class InteractionCommandHandler:
     self.bind()
 
   def bind(self):
-
+    # TODO Add logic to handle button update event
     @self.client.tree.command()
     async def grants(interaction: Interaction) -> None:
       await interaction.response.send_message(f'No have grant')

@@ -1,5 +1,5 @@
 import requests, logging, datetime as dt
-from src.cftools.interface import Config, Grants, ApiMethods, AuthData, StatsBoard
+from src.cftools.interface import CfConfig, Grants, ApiMethods, AuthData, StatsBoard
 from src.database.connector import Connector
 from src.cftools.models import AuthToken, Grant
 from tortoise import Tortoise
@@ -14,7 +14,7 @@ class CfToolsApi:
   grants: Grants
   db_connector: Connector
 
-  def __init__(self, config: Config) -> None:
+  def __init__(self, config: CfConfig) -> None:
     self.api_url = config.api_url
     self.secret = config.secret
     self.app_id = config.app_id
