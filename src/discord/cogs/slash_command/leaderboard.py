@@ -53,6 +53,7 @@ class LeaderboardCommand(Cog):
     default_member_permissions=Permissions()
   )
 
+
   async def leaderboard(self, interaction: ApplicationCommandInteraction, channel: TextChannel, server: str) -> None:
     try:
       grants = await self.api.get_grants()
