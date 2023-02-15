@@ -14,6 +14,7 @@ class ServerResource(BaseModel):
   identifier: str
   object_id: str
 
+
 class Server(BaseModel):
   created_at: str
   resource: ServerResource
@@ -53,6 +54,17 @@ class SingleStats(BaseModel):
 class Leaderboard(BaseModel):
   leaderboard: list[SingleStats]|Any
   status: bool
+  error: str|Any
+
+
+class StatsPlayer(BaseModel):
+  name: str|Any
+  stats: str|Any
+
+
+class StatsDetail(BaseModel):
+  name: str|Any
+  players: list[StatsPlayer]|Any
 
 
 class ApiMethods:
@@ -65,3 +77,5 @@ class ApiMethods:
   @classmethod
   def board(cls, server_id, stat=None, order=-1, limit=15) -> str:
     return f'{cls.api_ver}/server/{server_id}/leaderboard?stat={stat or "kills"}&{order=}&{limit=}'
+
+  

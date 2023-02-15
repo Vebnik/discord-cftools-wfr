@@ -6,6 +6,8 @@ from disnake import ApplicationCommandInteraction, Option, OptionType
 from src.cftools.cftools_api import CfToolsApi
 from src.cftools.interface import CfConfig
 
+from src.discord.embdes import GrantsEmbed
+
 class CmdConfig:
   options = [
     Option(
@@ -15,6 +17,7 @@ class CmdConfig:
       required=False
     )
   ]
+  
   cf_config = CfConfig(
 		api_url=os.getenv('CF_TOOLS_ROOT_API'),
 		secret=os.getenv('CF_TOOLS_SECRET'),
@@ -38,7 +41,9 @@ class GrantsCommand(Cog):
   )
   async def grants(self, interaction: ApplicationCommandInteraction, update=False) -> None:
     grants = await self.api.get_grants(update=update)
-    await interaction.response.send_message(f'```python\n{grants}\n```', ephemeral=False)
+    embed = GrantsEmbed.get_embed(grants)
+
+    await interaction.response.send_message(embed=embed, ephemeral=False)
 
 
 # load ext
