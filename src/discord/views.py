@@ -1,14 +1,21 @@
-from discord.ui import View, Button, button
-from discord import Interaction, Emoji
-
-from src.discord.embdes import LeaderboardEmbed
+from disnake.ui import Button
+from disnake import Component, ButtonStyle
 
 
-class LeaderboardView(View):
-  def __init__(self, *, timeout = None):
-    super().__init__(timeout=timeout)
-
-  @button(label='Update', custom_id='upd_btn_board')
-  async def update(self, interaction: Interaction, button: Button) -> None:
-    embed = LeaderboardEmbed({'title': 'Hello'})
-    await interaction.response.edit_message(view=self, embed=embed.get_embed())
+class LeaderboardComponents:
+  @classmethod
+  def get_components(cls) -> Component:
+    return [
+      Button(
+        label='Update', 
+        custom_id='upd_board_btn', 
+        disabled=False,
+        style=ButtonStyle.success
+      ),
+      Button(
+        label='Delete', 
+        custom_id='del_board_btn', 
+        disabled=False,
+        style=ButtonStyle.danger
+      )
+    ]

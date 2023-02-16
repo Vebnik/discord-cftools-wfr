@@ -1,8 +1,10 @@
-import disnake, logging, datetime, os, asyncio
+import disnake, logging, datetime, os
 from disnake.ext import commands
+from disnake import MessageInteraction
 
 from src.database.connector import Connector
 from src.discord.interface import DisConfig
+from src.discord.controllers import ButtonInteractionHandler
 
 
 class App:
@@ -27,6 +29,10 @@ class App:
       @self.bot.event
       async def on_ready():
         logging.info(f'App started at: {datetime.datetime.now()}')
+
+      @self.bot.event
+      async def on_button_click(interaction: MessageInteraction):
+        await ButtonInteractionHandler.bind(interaction=interaction)
 
       self.bot.load_extensions(os.path.join(os.getcwd(), 'src', 'discord', 'cogs', 'slash_command'))
       self.bot.run(config.token)

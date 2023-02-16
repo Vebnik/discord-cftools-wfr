@@ -7,9 +7,8 @@ from disnake import (
 
 from src.cftools.cftools_api import CfToolsApi
 from src.cftools.interface import CfConfig, StatsDetail, StatsPlayer
-
 from src.discord.embdes import LeaderboardEmbed
-
+from src.discord.views import LeaderboardComponents
 from settings import SERVERS, BOARD_STATS
 
 
@@ -50,7 +49,7 @@ class LeaderboardCommand(Cog):
     description='Spawn Leaderboard in select channels',
     dm_permission=False,
     options=CmdConfig.options,
-    default_member_permissions=Permissions()
+    default_member_permissions=Permissions(administrator=True)
   )
 
 
@@ -76,7 +75,8 @@ class LeaderboardCommand(Cog):
           stats_detail.append(StatsDetail(name=stats, players=ind_stats))
 
         embed = LeaderboardEmbed.get_embed(stats_detail)
-        await channel.send(embed=embed)
+        components = LeaderboardComponents.get_components()
+        await channel.send(embed=embed, components=components)
         await interaction.edit_original_message('Done')
       else: raise Exception('Bad server id')
 

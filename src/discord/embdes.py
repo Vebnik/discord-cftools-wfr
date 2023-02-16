@@ -1,5 +1,5 @@
 import datetime as dt, re
-from disnake import Embed
+from disnake import Embed, Component
 
 from src.cftools.interface import Grants, StatsDetail
 
@@ -63,5 +63,26 @@ class GrantsEmbed:
       "footer": {
         "text": f'updated at {dt.datetime.now().date()}',
         "icon_url": 'https://wfrdayz.ru/gallery_gen/849f813c94022f7f8a820435611f3cec.png'
-      }
+      },
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "style": 3,
+              "label": 'Update',
+              "custom_id": 'upd_board_btn',
+              "disabled": False,
+              "type": 2
+            },
+            {
+              "style": 4,
+              "label": 'Delete',
+              "custom_id": 'del_board_btn',
+              "disabled": False,
+              "type": 2
+            }
+          ]
+        }
+      ]
     }
