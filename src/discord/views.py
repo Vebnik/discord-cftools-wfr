@@ -4,11 +4,11 @@ from disnake import Component, ButtonStyle
 
 class LeaderboardComponents:
   @classmethod
-  def get_components(cls) -> Component:
+  def get_components(cls, server: str) -> Component:
     return [
       Button(
         label='Update', 
-        custom_id='upd_board_btn', 
+        custom_id=f'upd_board_btn|{server}', 
         disabled=False,
         style=ButtonStyle.success
       ),

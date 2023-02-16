@@ -1,4 +1,5 @@
 from dotenv import load_dotenv; load_dotenv()
+from src.cftools.interface import CfConfig
 import os
 
 COMMAND_PERMISSIONS = (
@@ -22,6 +23,12 @@ BOARD_STATS = [
     "longest_shot",
     "kdratio"
 ]
+
+CF_CONFIG = CfConfig(
+    api_url=os.getenv('CF_TOOLS_ROOT_API'),
+    secret=os.getenv('CF_TOOLS_SECRET'),
+    app_id=os.getenv('CF_TOOLS_APPID')
+)
 
 TORTOISE_ORM = {
     "connections": {"default": os.getenv('DB_URL')},

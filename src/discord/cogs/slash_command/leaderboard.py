@@ -1,15 +1,13 @@
 import os, logging
 
 from disnake.ext.commands import Cog, InteractionBot, slash_command
-from disnake import (
-  ApplicationCommandInteraction, Option, OptionType, OptionChoice, TextChannel, Permissions
-)
+from disnake import ( ApplicationCommandInteraction, Option, OptionType, OptionChoice, TextChannel, Permissions )
 
 from src.cftools.cftools_api import CfToolsApi
 from src.cftools.interface import CfConfig, StatsDetail, StatsPlayer
 from src.discord.embdes import LeaderboardEmbed
 from src.discord.views import LeaderboardComponents
-from settings import SERVERS, BOARD_STATS
+from settings import SERVERS, BOARD_STATS, CF_CONFIG
 
 
 class CmdConfig:
@@ -28,12 +26,6 @@ class CmdConfig:
     ),
   ]
 
-  cf_config = CfConfig(
-		api_url=os.getenv('CF_TOOLS_ROOT_API'),
-		secret=os.getenv('CF_TOOLS_SECRET'),
-		app_id=os.getenv('CF_TOOLS_APPID')
-	)
-
 
 class LeaderboardCommand(Cog):
 
@@ -42,7 +34,7 @@ class LeaderboardCommand(Cog):
 
   def __init__(self, bot: InteractionBot) -> None:
     self.bot = bot
-    self.api = CfToolsApi(CmdConfig.cf_config)
+    self.api = CfToolsApi(CF_CONFIG)
 
   @slash_command(
     name='leaderboard',
@@ -51,8 +43,6 @@ class LeaderboardCommand(Cog):
     options=CmdConfig.options,
     default_member_permissions=Permissions(administrator=True)
   )
-
-
   async def leaderboard(self, interaction: ApplicationCommandInteraction, channel: TextChannel, server: str) -> None:
     try:
       grants = await self.api.get_grants()
@@ -75,7 +65,8 @@ class LeaderboardCommand(Cog):
           stats_detail.append(StatsDetail(name=stats, players=ind_stats))
 
         embed = LeaderboardEmbed.get_embed(stats_detail)
-        components = LeaderboardComponents.get_components()
+        components = LeaderboardComponents.get_components(server)
+
         await channel.send(embed=embed, components=components)
         await interaction.edit_original_message('Done')
       else: raise Exception('Bad server id')

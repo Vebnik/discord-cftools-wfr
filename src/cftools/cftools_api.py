@@ -46,7 +46,6 @@ class CfToolsApi:
       stats_list: list[Leaderboard] = []
 
       for stats in BOARD_STATS:
-        await interaction.edit_original_message(f'Work in progress -> Get `{stats}`')
         logging.info(f'Get {stats}')
 
         root_url = url or f'{self.api_url}{ApiMethods.board(server_id=server_id, stat=stats, limit=5)}'
