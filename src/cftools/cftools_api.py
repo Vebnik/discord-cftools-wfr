@@ -1,6 +1,6 @@
 import requests, logging, datetime as dt, asyncio
 
-from src.cftools.interface import CfConfig, Grants, ApiMethods, AuthData, Leaderboard
+from src.cftools.interface import CfConfig, Grants, ApiMethods, AuthData, Leaderboard, ConvertId, IndividualStats
 from src.cftools.models import AuthToken, Grant
 
 from disnake import ApplicationCommandInteraction
@@ -54,6 +54,28 @@ class CfToolsApi:
         await asyncio.sleep(1)
 
       return stats_list
+    except Exception as ex:
+      logging.critical(ex)
+
+  async def convert_steamid_to_cfid(self, steam_id: str) -> ConvertId:
+    try:
+      if not await self._valid_time_token(): await self._init_auth()
+
+      headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
+      response = requests.get(f'{self.api_url}{ApiMethods.convert}{steam_id}', headers=headers)
+
+      return ConvertId.parse_obj(response.json())
+    except Exception as ex:
+      logging.critical(ex)
+
+  async def get_individual_stats(self, cftools_id: str, server: str) -> IndividualStats:
+    try:
+      if not await self._valid_time_token(): await self._init_auth()
+
+      headers = { 'Authorization': f'Bearer {self.auth_data.token}' }
+      response = requests.get(f'{self.api_url}{ApiMethods.ind_stats(cftools_id, server)}', headers=headers)
+
+      return IndividualStats.parse_obj(response.json().get(cftools_id))
     except Exception as ex:
       logging.critical(ex)
 
