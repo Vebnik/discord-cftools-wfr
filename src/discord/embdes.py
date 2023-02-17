@@ -1,7 +1,7 @@
 import datetime as dt, re
 from disnake import Embed, Component
 
-from src.cftools.interface import Grants, StatsDetail
+from src.cftools.interface import Grants, StatsDetail, IndividualStats
 
 class LeaderboardEmbed:
 
@@ -64,25 +64,47 @@ class GrantsEmbed:
         "text": f'updated at {dt.datetime.now().date()}',
         "icon_url": 'https://wfrdayz.ru/gallery_gen/849f813c94022f7f8a820435611f3cec.png'
       },
-      "components": [
+    }
+
+
+class StatsEmbed:
+
+  @classmethod
+  def get_embed(cls, data: IndividualStats) -> Embed:
+    return Embed.from_dict(cls.get_row_embed(data))
+
+  @classmethod
+  def get_row_embed(cls, data: IndividualStats) -> dict:
+    return {
+      "type": "rich",
+      "title": 'Individual statistic',
+      "description": 'Server - WFR',
+      "color": 0x9d8ce1,
+      "fields": [
         {
-          "type": 1,
-          "components": [
-            {
-              "style": 3,
-              "label": 'Update',
-              "custom_id": 'upd_board_btn',
-              "disabled": False,
-              "type": 2
-            },
-            {
-              "style": 4,
-              "label": 'Delete',
-              "custom_id": 'del_board_btn',
-              "disabled": False,
-              "type": 2
-            }
-          ]
+          "name": 'Updated at',
+          "value": f'```css\n{data.updated_at.strftime("%Y-%m-%d %H:%M")}\n```'
+        },
+        {
+          "name": 'Game',
+          "value": '```css\n' + '\n'.join(
+            [f'{key.replace("_", " ").capitalize()}: {value}' for key, value in data.game.general.dict().items()]
+            ) + '\n```'
+        },
+        {
+          "name": 'Omega',
+          "value": '```css\n' + '\n'.join(
+            [f'{key.replace("_", " ").capitalize()}: {value}' for key, value in data.omega.items()]
+            ) + '\n```'
         }
-      ]
+      ],
+      "thumbnail": {
+        "url": 'https://wfrdayz.ru/gallery_gen/849f813c94022f7f8a820435611f3cec.png',
+        "height": 0,
+        "width": 0
+      },
+      "footer": {
+        "text": f'updated at {dt.datetime.now().date()}',
+        "icon_url": 'https://wfrdayz.ru/gallery_gen/849f813c94022f7f8a820435611f3cec.png'
+      },
     }

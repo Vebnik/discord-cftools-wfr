@@ -1,5 +1,3 @@
-import os
-
 from disnake.ext.commands import Cog, InteractionBot, slash_command
 from disnake import ApplicationCommandInteraction, Option, OptionType, Permissions
 
@@ -7,6 +5,7 @@ from src.cftools.cftools_api import CfToolsApi
 from src.cftools.interface import CfConfig
 from src.discord.embdes import GrantsEmbed
 from src.discord.views import LeaderboardComponents
+from settings import CF_CONFIG
 
 class CmdConfig:
   options = [
@@ -17,12 +16,6 @@ class CmdConfig:
       required=False
     )
   ]
-  
-  cf_config = CfConfig(
-		api_url=os.getenv('CF_TOOLS_ROOT_API'),
-		secret=os.getenv('CF_TOOLS_SECRET'),
-		app_id=os.getenv('CF_TOOLS_APPID')
-	)
 
 
 class GrantsCommand(Cog):
@@ -32,7 +25,7 @@ class GrantsCommand(Cog):
 
   def __init__(self, bot: InteractionBot) -> None:
     self.bot = bot
-    self.api = CfToolsApi(CmdConfig.cf_config)
+    self.api = CfToolsApi(CF_CONFIG)
 
   @slash_command(
     name='grants',
