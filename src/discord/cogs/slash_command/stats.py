@@ -4,6 +4,7 @@ from disnake import ApplicationCommandInteraction, Option, OptionType, OptionCho
 
 from src.cftools.cftools_api import CfToolsApi
 from src.discord.embdes import StatsEmbed
+from src.discord.models import User
 from settings import CF_CONFIG, SERVERS
 
 
@@ -35,6 +36,8 @@ class StatsCommand(Cog):
   )
   async def stats(self, interaction: ApplicationCommandInteraction, server, steam_id) -> None:
     try:
+      await User.create(discord_identity=interaction.user.id, name=interaction.user.name, command_used='stats')
+      
       if await self._valid_steam_id(steam_id) is False:
         return await self._send_error(interaction, steam_id)
 
