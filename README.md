@@ -8,4 +8,5 @@
 5. `poetry install`
 6. `add .env`
 7. `add settings.py`
-8. `poetry run start`
+8. `ae run start`
+9. `poetry run start`

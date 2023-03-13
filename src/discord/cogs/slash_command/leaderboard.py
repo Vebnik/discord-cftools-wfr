@@ -51,7 +51,7 @@ class LeaderboardCommand(Cog):
       if server in servers_id:
         await interaction.response.send_message('Work in progress', ephemeral=True)
 
-        leaderboards = await self.api.get_leaderboard(server, interaction=interaction)
+        leaderboards = await self.api.get_leaderboard(server)
         stats_detail: list[StatsDetail] = []
 
         for index, stats in enumerate(BOARD_STATS):
