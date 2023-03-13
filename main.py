@@ -1,5 +1,5 @@
 from dotenv import load_dotenv; load_dotenv()
-import os, asyncio, logging
+import os, logging
 
 from src.discord.app import App
 from src.discord.interface import DisConfig
