@@ -16,6 +16,9 @@ tortoise-orm = "^0.19.3"
 aerich = "^0.7.1"
 disnake = "^2.8.0"
 
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+
 [tool.aerich]
 tortoise_orm = "settings.TORTOISE_ORM"
 location = "./migrations"
@@ -26,5 +29,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-start='main:main'
+start='main:entry'
 migrate='src.database.migrate:migrate'

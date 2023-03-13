@@ -38,7 +38,7 @@ class CfToolsApi:
     except Exception as ex:
       logging.critical(ex)
 
-  async def get_leaderboard(self, server_id, interaction: ApplicationCommandInteraction, url=None) -> list[Leaderboard]:
+  async def get_leaderboard(self, server_id) -> list[Leaderboard]:
     try:
       if not await self._valid_time_token(): await self._init_auth()
 
@@ -48,7 +48,7 @@ class CfToolsApi:
       for stats in BOARD_STATS:
         logging.info(f'Get {stats}')
 
-        root_url = url or f'{self.api_url}{ApiMethods.board(server_id=server_id, stat=stats, limit=5)}'
+        root_url = f'{self.api_url}{ApiMethods.board(server_id=server_id, stat=stats, limit=5)}'
         response = requests.get(root_url, headers=headers)
         stats_list.append(Leaderboard.parse_obj(response.json()))
         await asyncio.sleep(1)
@@ -111,3 +111,4 @@ class CfToolsApi:
       else: return True
 
     return False
+

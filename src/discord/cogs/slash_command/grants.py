@@ -36,9 +36,8 @@ class GrantsCommand(Cog):
   async def grants(self, interaction: ApplicationCommandInteraction, update=False) -> None:
     grants = await self.api.get_grants(update=update)
     embed = GrantsEmbed.get_embed(grants)
-    components = LeaderboardComponents.get_components()
 
-    await interaction.response.send_message(embed=embed, ephemeral=True, components=components)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 # load ext

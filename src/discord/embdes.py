@@ -19,7 +19,7 @@ class LeaderboardEmbed:
       "fields": [
         {
           "name": item.name,
-          "value": '```\n'+'\n'.join([f'{player.name} -> {player.stats}' for player in item.players])+'\n```'
+          "value": '```css\n'+'\n'.join([f'{player.name} -> {player.stats}' for player in item.players])+'\n```'
         } for item in data
       ],
       "thumbnail": {
@@ -28,7 +28,7 @@ class LeaderboardEmbed:
         "width": 0
       },
       "footer": {
-        "text": f'Updated at {dt.datetime.now().date()}',
+        "text": f'Updated at {dt.datetime.now().strftime("%m-%d-%Y %H:%M:%S")}',
         "icon_url": 'https://wfrdayz.ru/gallery_gen/849f813c94022f7f8a820435611f3cec.png'
       }
     }
