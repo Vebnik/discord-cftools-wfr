@@ -30,4 +30,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 start='main:entry'
-migrate='src.database.migrate:migrate'
