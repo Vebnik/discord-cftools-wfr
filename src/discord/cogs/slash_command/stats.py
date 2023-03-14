@@ -50,12 +50,12 @@ class StatsCommand(Cog):
       stats = await self.api.get_individual_stats(convert_data.cftools_id, server)
       embed = StatsEmbed.get_embed(stats)
 
-      await interaction.response.edit_message(embed=embed)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
     except Exception as ex:
-      await interaction.response.edit_message(f'```fix\n{ex}\n```')
+      await interaction.response.send_message(f'```fix\n{ex}\n```', ephemeral=True)
 
   async def _send_error(self, interaction: ApplicationCommandInteraction, steam_id):
-    await interaction.response.edit_message(f'🛑\nNot a valid steamid: {steam_id}')
+    await interaction.response.send_message(f'🛑\nNot a valid steamid: {steam_id}', ephemeral=True)
 
   async def _valid_steam_id(self, steam_id: str) -> bool:
     return not bool(re.search(r'[^\d]', steam_id))
