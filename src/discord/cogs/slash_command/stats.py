@@ -36,6 +36,7 @@ class StatsCommand(Cog):
   )
   async def stats(self, interaction: ApplicationCommandInteraction, server, steam_id) -> None:
     try:
+      await interaction.response.defer(ephemeral=True)
       await User.create(discord_identity=interaction.user.id, name=interaction.user.name, command_used='stats')
       
       if await self._valid_steam_id(steam_id) is False:
@@ -49,12 +50,12 @@ class StatsCommand(Cog):
       stats = await self.api.get_individual_stats(convert_data.cftools_id, server)
       embed = StatsEmbed.get_embed(stats)
 
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.response.edit_message(embed=embed, ephemeral=True)
     except Exception as ex:
-      await interaction.response.send_message(f'```fix\n{ex}\n```', ephemeral=True)
+      await interaction.response.edit_message(f'```fix\n{ex}\n```', ephemeral=True)
 
-  async def _send_error(self, interaction, steam_id):
-    await interaction.response.send_message(f'🛑\nNot a valid steamid: {steam_id}', ephemeral=True)
+  async def _send_error(self, interaction: ApplicationCommandInteraction, steam_id):
+    await interaction.response.edit_message(f'🛑\nNot a valid steamid: {steam_id}', ephemeral=True)
 
   async def _valid_steam_id(self, steam_id: str) -> bool:
     return not bool(re.search(r'[^\d]', steam_id))
