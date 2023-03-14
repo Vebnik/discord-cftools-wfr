@@ -36,7 +36,7 @@ class StatsCommand(Cog):
   )
   async def stats(self, interaction: ApplicationCommandInteraction, server, steam_id) -> None:
     try:
-      await interaction.response.defer(ephemeral=True)
+      # await interaction.response.defer(ephemeral=True)
       await User.create(discord_identity=interaction.user.id, name=interaction.user.name, command_used='stats')
       
       if await self._valid_steam_id(steam_id) is False:
